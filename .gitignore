@@ -1,6 +1,6 @@
 # PHP / Composer
-/vendor/
-/composer.phar
+vendor/
+composer.phar
 
 # Environment
 .env

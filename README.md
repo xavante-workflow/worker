@@ -1,6 +1,6 @@
 # Xavante Worker
 
-A PHP-based worker component for the Xavante Workflow Engine that processes workflow instances and simulates the complete workflow execution lifecycle.
+A **Laravel Zero** powered worker component for the Xavante Workflow Engine that processes workflow instances and simulates the complete workflow execution lifecycle.
 
 ## 🎯 Purpose
 
@@ -16,21 +16,16 @@ This worker serves as a simulation and testing tool for workflow processes, allo
 
 ## 🏗️ Architecture
 
-The worker leverages the **Xavante Core Library** (`xavante/core`) which provides:
-- Workflow models and domain objects
-- Action execution logic
-- Condition evaluation systems
-- Runtime execution environment
+The worker leverages **Laravel Zero** framework and the **Xavante Core Library** (`xavante/core`) which provides:
 
 ```
-┌─────────────────┐    ┌─────────────────┐
-│  Xavante Worker │────│  Xavante Core   │
-│                 │    │                 │
-│  • Process Exec │    │  • Models       │
-│                 │    │  • Actions      │
-│                 │    │  • Conditions   │
-│                 │    │  • Runtime      │
-└─────────────────┘    └─────────────────┘
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Laravel Zero   │────│  Xavante Worker │────│  Xavante Core   │
+│                 │    │                 │    │                 │
+│  • CLI Framework│    │  • Commands     │    │  • Models       │
+│  • Artisan      │    │  • Process Exec │    │  • Actions      │
+│  • Service Cont │    │  • Scheduling   │    │  • Conditions   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 🚀 Getting Started
@@ -39,8 +34,11 @@ The worker leverages the **Xavante Core Library** (`xavante/core`) which provide
 
 - PHP 8.2 or higher
 - Composer
+- Docker (optional, for containerized deployment)
 
-### Installation
+## 📦 Installation Methods
+
+### Method 1: Local Development
 
 1. **Navigate to the worker directory:**
    ```bash
@@ -54,52 +52,296 @@ The worker leverages the **Xavante Core Library** (`xavante/core`) which provide
 
 3. **Run the worker:**
    ```bash
-   php worker.php
+   php worker worker:run
    ```
 
-## 📁 Project Structure
+### Method 2: Docker Deployment
+
+1. **Using Docker Compose (Recommended):**
+   ```bash
+   # Production deployment
+   docker-compose up -d xavante-worker
+   
+   # Development with hot reload
+   docker-compose --profile development up -d xavante-worker-dev
+   ```
+
+2. **Using Docker directly:**
+   ```bash
+   # Build the image
+   docker build -t xavante/worker:latest .
+   
+   # Run the container
+   docker run --rm xavante/worker:latest worker:run
+   ```
+
+## 📁 Project Structure (Laravel Zero)
 
 ```
 worker/
 ├── app/
-│   ├── composer.json          # Dependencies and autoloading
-│   ├── composer.lock          # Locked dependency versions
-│   ├── worker.php            # Main worker entry point
-│   └── vendor/               # Composer dependencies
-│       └── xavante/core/     # Xavante core library (symlinked)
-├── description.md            # Project description
-└── README.md                # This file
+│   ├── app/
+│   │   ├── Console/
+│   │   │   ├── Commands/           # Laravel Zero Artisan commands
+│   │   │   │   ├── WorkerCommand.php   # Main worker command
+│   │   │   │   └── ProcessCommand.php  # Workflow processing command
+│   │   │   └── Kernel.php         # Console kernel
+│   │   └── Providers/
+│   │       └── AppServiceProvider.php
+│   ├── bootstrap/
+│   │   └── app.php                # Application bootstrap
+│   ├── config/
+│   │   └── app.php                # Application configuration
+│   ├── routes/
+│   │   └── console.php            # Console routes
+│   ├── composer.json              # Laravel Zero dependencies
+│   └── worker                     # Artisan executable
+├── docker-compose.yml             # Docker orchestration
+├── Dockerfile                     # Multi-stage Docker build
+├── .env.example                   # Environment configuration template
+└── README.md                      # This file
 ```
 
 ## 🔧 Configuration
 
-The worker is configured through its `composer.json` file:
+### Environment Configuration
 
-- **Core Library Integration**: Uses a path repository to include the local `xavante/core` library
-- **Autoloading**: PSR-4 autoloading for `Xavante\Worker\` namespace
-- **Dependencies**: Includes Guzzle HTTP client and PHPUnit for testing
+Copy the environment template and customize:
+```bash
+cp .env.example .env
+```
 
-### Composer Configuration Highlights
+Edit `.env` file:
+```env
+APP_ENV=production
+APP_NAME="Xavante Worker"
+APP_VERSION=1.0.0
+APP_DEBUG=false
+```
+
+### Composer Configuration
+
+The worker uses Laravel Zero framework with the following key dependencies:
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../../lib/core"
-        }
-    ],
     "require": {
+        "php": "^8.2",
+        "laravel-zero/framework": "^11.0",
+        "guzzlehttp/guzzle": "^7.10",
         "xavante/core": "dev-main"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
+```
+
+## 🚀 Available Commands
+
+### Laravel Zero Artisan Commands
+
+```bash
+# List all available commands
+php worker list
+
+# Run the main worker command
+php worker worker:run
+
+# Run worker with JSON output format
+php worker worker:run --format=json
+
+# Process workflows (simulation)
+php worker process
+
+# Process specific workflow
+php worker process --workflow-id=12345
+
+# Process with verbose output
+php worker process --verbose
+
+# Show application information
+php worker app:version
+```
+
+### Docker Commands
+
+```bash
+# Production deployment
+docker-compose up -d
+
+# Development mode with hot reload
+docker-compose --profile development up -d
+
+# View logs
+docker-compose logs -f xavante-worker
+
+# Execute commands in running container
+docker-compose exec xavante-worker php worker list
+
+# Stop services
+docker-compose down
+
+# Rebuild and restart
+docker-compose down && docker-compose build && docker-compose up -d
 ```
 
 ## 🛠️ Development
 
-### Adding New Features
+### Local Development Setup
+
+1. **Install dependencies:**
+   ```bash
+   cd app && composer install
+   ```
+
+2. **Run in development mode:**
+   ```bash
+   php worker worker:run --verbose
+   ```
+
+3. **Watch for changes (using Docker):**
+   ```bash
+   docker-compose --profile development up -d xavante-worker-dev
+   ```
+
+### Adding New Commands
+
+Create new Laravel Zero commands in `app/Console/Commands/`:
+
+```php
+<?php
+
+namespace App\Console\Commands;
+
+use LaravelZero\Framework\Commands\Command;
+
+class YourCommand extends Command
+{
+    protected $signature = 'your:command {argument} {--option}';
+    protected $description = 'Description of your command';
+
+    public function handle(): int
+    {
+        $this->info('Your command logic here');
+        return self::SUCCESS;
+    }
+}
+```
+
+## 🐳 Docker Configuration
+
+### Multi-stage Dockerfile
+
+The project uses a multi-stage Docker build:
+
+- **Builder stage**: Installs Composer dependencies and builds the application
+- **Production stage**: Creates a minimal runtime image with only necessary files
+
+### Docker Compose Services
+
+- **xavante-worker**: Production service with resource limits and health checks
+- **xavante-worker-dev**: Development service with volume mounts for hot reload
+
+### Health Checks
+
+The container includes health checks to ensure the application is running properly:
+```bash
+# Manual health check
+docker exec xavante-worker php worker list
+```
+
+## 🔍 Monitoring & Logging
+
+### Application Logs
+
+View application logs:
+```bash
+# Docker logs
+docker-compose logs -f xavante-worker
+
+# Application output
+php worker worker:run --verbose
+```
+
+### Health Status
+
+Check container health:
+```bash
+# Container status
+docker-compose ps
+
+# Health check
+docker inspect xavante-worker --format='{{.State.Health.Status}}'
+```
+
+## 🧪 Testing
+
+Run tests using PHPUnit:
+```bash
+# Local testing
+cd app && ./vendor/bin/phpunit
+
+# Docker testing
+docker-compose exec xavante-worker ./vendor/bin/phpunit
+```
+
+## 🚢 Deployment
+
+### Production Deployment
+
+1. **Build and deploy:**
+   ```bash
+   # Pull latest changes
+   git pull origin main
+   
+   # Build and start services
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
+
+2. **Verify deployment:**
+   ```bash
+   # Check service status
+   docker-compose ps
+   
+   # Test command execution
+   docker-compose exec xavante-worker php worker worker:run
+   ```
+
+### Scaling
+
+Scale the worker service:
+```bash
+# Scale to 3 instances
+docker-compose up -d --scale xavante-worker=3
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support and questions:
+
+- Create an issue in the repository
+- Contact: xavante@eduardo-luz.com
+
+## 🔄 Changelog
+
+### v1.0.0 (Laravel Zero Migration)
+- ✅ Migrated to Laravel Zero framework
+- ✅ Added Docker support with multi-stage builds
+- ✅ Created Artisan commands for workflow processing
+- ✅ Added comprehensive documentation
+- ✅ Implemented health checks and monitoring
+- ✅ Added development and production environments
 
 1. Create new classes under the `src/` directory with the `Xavante\Worker\` namespace
 2. Follow PSR-4 autoloading conventions

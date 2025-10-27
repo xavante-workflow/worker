@@ -1,0 +1,51 @@
+# PHP / Composer
+/vendor/
+/composer.phar
+
+# Environment
+.env
+.env.*          # local env variants
+
+# Logs and runtime
+*.log
+/logs/
+tmp/
+temp/
+cache/
+.cache/
+
+# Testing and coverage
+.phpunit.result.cache
+.phpunit.cache
+coverage/
+htmlcov/
+
+# Build / distribution
+/build/
+/dist/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node (if present)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Backup / swap files
+*~
+*.swp
+*.bak
+*.orig
+
+# Secrets / keys / certificates
+*.pem
+*.key
+*.crt

@@ -140,25 +140,25 @@ The worker uses Laravel Zero framework with the following key dependencies:
 
 ```bash
 # List all available commands
-php worker list
+php xavante list
 
 # Run the main worker command
-php worker worker:run
+php xavante worker:run
 
 # Run worker with JSON output format
-php worker worker:run --format=json
+php xavante worker:run --format=json
 
 # Process workflows (simulation)
-php worker process
+php xavante process
 
 # Process specific workflow
-php worker process --workflow-id=12345
+php xavante process --workflow-id=12345
 
 # Process with verbose output
-php worker process --verbose
+php xavante process --verbose
 
 # Show application information
-php worker app:version
+php xavante app:version
 ```
 
 ### Docker Commands

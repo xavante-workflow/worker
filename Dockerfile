@@ -51,7 +51,7 @@ WORKDIR /app
 COPY --from=builder --chown=worker:worker /app /app
 
 # Make worker executable
-RUN chmod +x /app/worker
+RUN chmod +x /app/xavante
 
 # Create directories for logs and cache
 RUN mkdir -p /app/storage/logs /app/storage/cache && \
@@ -65,8 +65,9 @@ ENV APP_ENV=production
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD php worker list || exit 1
+    CMD php xavante list || exit 1
 
 # Default command
-ENTRYPOINT ["php", "/app/worker"]
-CMD ["worker:run"]
+ENTRYPOINT [ "sleep", "infinity" ]
+# ENTRYPOINT ["php", "/app/xavante"]
+# CMD ["worker:run"]

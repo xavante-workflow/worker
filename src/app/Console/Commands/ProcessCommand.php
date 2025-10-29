@@ -13,7 +13,7 @@ class ProcessCommand extends Command
      */
     protected $signature = 'process
                             {--workflow-id= : Specific workflow ID to process}
-                            {--verbose : Show detailed output}';
+                            {--detailed : Show detailed output}';
 
     /**
      * The description of the command.
@@ -30,7 +30,7 @@ class ProcessCommand extends Command
         $this->info('🔄 Starting workflow processing...');
         
         $workflowId = $this->option('workflow-id');
-        $verbose = $this->option('verbose');
+        $detailed = $this->option('detailed');
         
         if ($workflowId) {
             $this->info("Processing specific workflow: {$workflowId}");
@@ -45,7 +45,7 @@ class ProcessCommand extends Command
         $this->info('📤 Triggering events and updating variables...');
         $this->info('📊 Evaluating and generating execution logs...');
         
-        if ($verbose) {
+        if ($detailed) {
             $this->line('');
             $this->line('Detailed workflow execution:');
             $this->line('- Step 1: Initialize workflow context');

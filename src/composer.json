@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/app/lib/core"
+            "url": "./lib/core"
         }
     ],
     "require": {
@@ -40,7 +40,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
+            "LaravelZero\\Framework\\ComposerScripts::postAutoloadDump"
         ]
     },
     "config": {

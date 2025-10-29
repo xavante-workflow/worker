@@ -24,4 +24,12 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    /**
+     * The Artisan commands provided by your application.
+     */
+    protected $commands = [
+        // Only register our Xavante-aligned commands
+        // Note: inspire command is intentionally excluded
+    ];
 }
